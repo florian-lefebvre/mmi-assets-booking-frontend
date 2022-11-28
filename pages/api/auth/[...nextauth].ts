@@ -11,11 +11,22 @@ export const authOptions = {
       async authorize(credentials, req) {
         if (!credentials) return null;
         const { password } = credentials;
-        if (password === process.env.SECRET_ACCESS_PASSWORD) {
-          return { id: "user" };
-        } else {
-          return null;
-        }
+        const res = (function () {
+          let value;
+          switch (password) {
+            case process.env.SECRET_ACCESS_PASSWORD:
+              value = { id: "user", name: "basic" };
+              break;
+            case process.env.SECRET_ADMIN_PASSWORD:
+              value = { id: "user", name: "admin" };
+              break;
+            default:
+              value = null;
+              break;
+          }
+          return value;
+        })();
+        return res;
       },
     }),
   ],
