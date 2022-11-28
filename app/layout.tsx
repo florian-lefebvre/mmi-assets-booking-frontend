@@ -1,10 +1,15 @@
-import './globals.css'
+import { unstable_getServerSession } from "next-auth";
+import SignOutButton from "../components/Auth/SignOutButton";
+import AuthProvider from "../components/Auth/AuthProvider";
+import "./globals.css";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
+  const session = await unstable_getServerSession();
+
   return (
     <html lang="en">
       {/*
@@ -12,7 +17,14 @@ export default function RootLayout({
         head.tsx. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
       */}
       <head />
-      <body>{children}</body>
+      <body>
+        <header>
+          <div>HEADER</div>
+          <pre>{JSON.stringify(session, null, 2)}</pre>
+          <SignOutButton />
+        </header>
+        <AuthProvider session={session}>{children}</AuthProvider>
+      </body>
     </html>
-  )
+  );
 }
